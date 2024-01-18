@@ -1,9 +1,13 @@
 
 const Article = require('../model/article.model');
 const Category = require('../model/category.model');
-
+const { validationResult } = require('express-validator');
 exports.createArticle = async (req, res) => {
   try {
+   const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const { title, description, category } = req.body;
 
     // Check if the title is already taken
@@ -29,6 +33,7 @@ exports.createArticle = async (req, res) => {
 
 exports.getAllArticles = async (req, res) => {
   try {
+
     const { search } = req.query;
     let query = {};
 
@@ -48,6 +53,10 @@ exports.getAllArticles = async (req, res) => {
 
 exports.editArticle = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const { title, description, category } = req.body;
     const articleId = req.params.id;
 
